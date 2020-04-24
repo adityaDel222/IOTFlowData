@@ -1,0 +1,55 @@
+Fwd: Requirement for the project
+
+Forwarding the proj req
+
+Dear Aditya and Vinarma,
+
+I found that there has been a misunderstanding in the development of three cases 
+
+Hash only, symmetric and asymmetric.
+
+A. Hash Only:
+
+The basic is that the client should compute the hash on the four attributes of the flow record and the server should verify the same.
+
+Assume M is (src ip + dstnip + src port + dstn port + protocol) then calculate H(M)  and send to server [ M + H(M)]
+In the server-side, take the M again and compute H(M), compare H(M) computed at the server and the one sent from the client are same.  If so, message authentication achieved.
+
+Assume attacker (Fraud Client) tries to modify the message m1 and send to the server, [M1 + H(M)]
+
+ the server will compute a hash of M1 which will not be equal to H(M) and hence authentication will fail on the server-side.
+
+b. Symmetric encryption
+
+The CLient should compute the hash and encrypt the msg using symmetric  E(M+H(M)
+The server should decrypt the msg and recompute the hash value and verify it.
+Assume attacker (Fraud client) sends a new message and computes hash then it will not be matched at the receiver side.
+Even if the key is known,the hash value will not match.
+
+Similar case for c. Asymmetric encryption.
+
+3 programs for each case and 3 snapshots for each case I want.
+
+I hope you both understand the requirement now and revert back to me if you have any doubts.
+If you have not followed this process, kindly update it and send back to me.
+
+I have been waiting for these results from March last week.
+
+Regards,
+Dr.Sumaiya
+
+---
+
+Dear Aditya and Vinamra,
+
+As you are reworking on the client-server model based on the requirement given by me in my earlier mail, Share all the updated python code and snapshots in the mail from today so that Aswani sir can also comment on the same.
+
+@ Aditya: Initially, you can share the first case snapshots so that based on the feedback proceed to other cases.
+
+As discussed, we are planning to complete it in the next two days, all three cases.
+
+@ Aswani Sir: Vinamra is working on the client-server implementation and Aditya is working on the GUI model for all three cases, 
+
+
+Regards,
+Dr.Sumaiya

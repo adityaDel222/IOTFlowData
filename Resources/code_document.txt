@@ -1,0 +1,522 @@
+*****************HASH******************
+
+
+SERVER
+
+
+import socket
+import pandas as pd
+import hashlib
+from tkinter import *
+
+
+s = socket.socket()
+
+host = socket.gethostname()
+port = 12349
+s.bind((host,port))
+s.listen(5)
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+while True:
+    c,addr = s.accept()
+    print ('Got connection from',addr)
+    x1 = input('Enter the row number to be sent')
+    data1=str(df1.saddr[int(x1)])+str(df1.sport[int(x1)])+str(df1.daddr[int(x1)])+str(df1.dport[int(x1)])
+    
+    x=str(hashlib.sha256((data1).encode('utf-8')).hexdigest())+"sha256"+str(x1)+str(len(str(x1)))
+    print()
+    print("Data to be sent",x)
+    c.send(x.encode())
+    c.close()
+
+
+
+
+
+FRAUD SERVER 
+
+
+
+import socket
+import pandas as pd
+import hashlib
+from tkinter import *
+import random
+
+s = socket.socket()
+
+host = socket.gethostname()
+port = 12346
+s.bind((host,port))
+s.listen(5)
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+while True:
+    c,addr = s.accept()
+    print ('Got connection from',addr)
+    x1 = input('Enter the row number to be sent')
+    data1=str(df1.saddr[int(x1)])+str(df1.sport[int(x1)])+str(df1.daddr[int(x1)])+str(df1.dport[int(x1)])+str(random.randint(100,999))
+    
+    x=str(hashlib.sha256((data1).encode('utf-8')).hexdigest())+"sha256"+str(x1)+str(len(str(x1)))
+    print()
+    print("Data to be sent",x)
+    c.send(x.encode())
+    c.close()
+
+
+
+
+CLIENT
+
+
+
+
+import socket
+import datetime
+import hashlib
+import pandas as pd
+
+s=socket.socket()
+host=socket.gethostname()
+port=12346
+s.connect((host,port))
+d = ((s.recv(1024)).decode())
+
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+hashlist=list()
+for i in range(0,1000):
+    data1=str(df1.saddr[i])+str(df1.sport[i])+str(df1.daddr[i])+str(df1.dport[i])
+    hashlist.append(hashlib.sha256((data1).encode('utf-8')).hexdigest())
+    
+    
+
+d1=str(d)
+print("Received ",d1)
+row=int(d1[len(d1)-(int(d1[len(d1)-1]))-1:len(d1)-1])
+print("Row=", row)
+hashcompare=hashlist[row]
+
+if(d1[0:64]==hashcompare):
+    print("Data authenticated")
+else:
+    print("Not authenticated")
+s.close
+
+
+
+
+
+
+
+
+****************************Symmetric Encryption Plus Hash****************************
+
+
+
+SERVER
+
+
+
+
+
+# AES 256 encryption/decryption using pycrypto library
+ 
+import base64
+import hashlib
+from Crypto.Cipher import AES
+from Crypto import Random
+import pandas as pd
+import socket
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+
+
+
+s = socket.socket()
+
+host = socket.gethostname()
+port = 12350
+s.bind((host,port))
+s.listen(5)
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+while True:
+    c,addr = s.accept()
+    print ('Got connection from',addr)
+    
+    
+    
+    BLOCK_SIZE = 16
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+    unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+
+
+
+
+    def encrypt(raw, password):
+        private_key = hashlib.sha256(password.encode("utf-8")).digest()
+        raw = pad(raw)
+        iv = b"ClZ\xb6\x92\xb5\xc3\xac\x87\x03x\x80t'\xfa#"
+        cipher = AES.new(private_key, AES.MODE_CBC, iv)
+        return base64.b64encode(iv + cipher.encrypt(raw))
+
+
+
+    # First let us encrypt secret message
+    i=int(input("Enter the row value to be taken"))
+    password = str(1111) #Random password
+
+    plaintext=str(df1.saddr[i])+str(df1.sport[i])+str(df1.daddr[i])+str(df1.dport[i])+"sha256"
+
+    encrypted = encrypt(plaintext, password)
+
+    print("plaintext: ",plaintext)
+    print("AES encrypted plaintext: ",encrypted)
+
+    hashh=hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
+    print("Hash of plaintext: ",hashh)
+
+    sent=str(encrypted)[2:len(encrypted)+2]+str(hashh)
+    print("Data packet encrypted plus hash sent", sent)
+
+    print(len(sent))
+    c.send(sent.encode())
+    c.close()
+
+
+
+
+FRAUD SERVER
+
+
+
+# AES 256 encryption/decryption using pycrypto library
+import random
+import base64
+import hashlib
+from Crypto.Cipher import AES
+from Crypto import Random
+import pandas as pd
+import socket
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+
+
+
+s = socket.socket()
+
+host = socket.gethostname()
+port = 12351
+s.bind((host,port))
+s.listen(5)
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+while True:
+    c,addr = s.accept()
+    print ('Got connection from',addr)
+    
+    
+    
+    BLOCK_SIZE = 16
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+    unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+
+
+
+
+    def encrypt(raw, password):
+        private_key = hashlib.sha256(password.encode("utf-8")).digest()
+        raw = pad(raw)
+        iv = b"ClZ\xb6\x92\xb5\xc3\xac\x87\x03x\x80t'\xfa#"
+        cipher = AES.new(private_key, AES.MODE_CBC, iv)
+        return base64.b64encode(iv + cipher.encrypt(raw))
+
+
+
+    # First let us encrypt secret message
+    i=int(input("Enter the row value to be taken"))
+    password = str(1111) #Random password
+
+    plaintext=str(df1.saddr[i])+str(df1.sport[i])+str(df1.daddr[i])+str(df1.dport[i])+"sha256"
+
+    encrypted = encrypt(plaintext, password)
+
+    print("plaintext: ",plaintext)
+    print("AES encrypted plaintext: ",encrypted)
+
+    hashh=hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
+    print("Hash of plaintext: ",hashh)
+
+    sent=str(encrypted)[2:len(encrypted)+2]+str(hashh)+str(random.randint(100,999))
+    print("Data packet encrypted plus hash sent", sent)
+
+    print(len(sent))
+    c.send(sent.encode())
+    c.close()
+
+
+
+
+
+
+
+
+
+CLIENT
+
+
+
+
+
+
+# AES 256 encryption/decryption using pycrypto library
+ 
+import base64
+import hashlib
+from Crypto.Cipher import AES
+from Crypto import Random
+import pandas as pd
+import socket
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+s=socket.socket()
+host=socket.gethostname()
+port=12350
+s.connect((host,port))
+d = ((s.recv(1024)).decode())
+
+BLOCK_SIZE = 16
+pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+ 
+password = str(1111)
+ 
+datapacket=str(d)
+data=datapacket[0:len(datapacket)-64]
+hashh=str(datapacket[len(datapacket)-64:len(datapacket)])
+
+
+def decrypt(enc, password):
+    private_key = hashlib.sha256(password.encode("utf-8")).digest()
+    enc = base64.b64decode(enc)
+    iv = enc[:16]
+    cipher = AES.new(private_key, AES.MODE_CBC, iv)
+    return unpad(cipher.decrypt(enc[16:]))
+# Let us decrypt using our original password
+decrypted = decrypt(data, password)
+
+hashcompare=hashlib.sha256((str(decrypted))[2:len(decrypted)+2].encode('utf-8')).hexdigest()
+
+if(hashcompare==hashh):
+    print("Authenticated")
+else:
+    print("Not authenticated")
+
+
+
+
+
+
+***********************************Asymmetric Encryption Plus Hash*******************************
+
+
+
+SERVER
+
+
+
+import socket
+import pandas as pd
+import hashlib
+s = socket.socket()
+
+host = socket.gethostname()
+port = 12347
+s.bind((host,port))
+s.listen(5)
+df1 = pd.read_csv("C:/Users/Vinamra Das/Desktop/traffic.csv")
+
+while True:
+    c,addr = s.accept()
+    print ('Got connection from',addr)
+    x1 = input('Enter the row number to be sent')
+    data1=str(df1.saddr[int(x1)])+str(df1.sport[int(x1)])+str(df1.daddr[int(x1)])+str(df1.dport[int(x1)])+"sha256"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    def rsa_algo(p: int,q: int, msg: str):
+        # n = pq
+        n = p * q
+        # z = (p-1)(q-1)
+        z = (p-1)*(q-1)
+
+        # e -> gcd(e,z)==1      ; 1 < e < z
+        # d -> ed = 1(mod z)        ; 1 < d < z
+        e = find_e(z)
+        d = find_d(e, z)
+
+        # Convert Plain Text -> Cypher Text
+        cypher_text = ''
+        # C = (P ^ e) % n
+        for ch in msg:
+            # convert the Character to ascii (ord)
+            ch = ord(ch)
+            # encrypt the char and add to cypher text
+            # convert the calculated value to Characters(chr)
+            cypher_text += chr((ch ** e) % n)
+
+        # Convert Plain Text -> Cypher Text
+        plain_text = ''
+        # P = (C ^ d) % n
+        for ch in cypher_text:
+            # convert it to ascii
+            ch = ord(ch)
+            # decrypt the char and add to plain text
+            # convert the calculated value to Characters(chr)
+            plain_text += chr((ch ** d) % n)
+
+        return cypher_text, plain_text
+
+    def find_e(z: int):
+        # e -> gcd(e,z)==1      ; 1 < e < z
+        e = 2
+        while e < z:
+            # check if this is the required `e` value
+            if gcd(e, z)==1:
+                return e
+            # else : increment and continue
+            e += 1
+
+    def find_d(e: int, z: int):
+        # d -> ed = 1(mod z)        ; 1 < d < z
+        d = 2
+        while d < z:
+            # check if this is the required `d` value
+            if ((d*e) % z)==1:
+                return d
+            # else : increment and continue
+            d += 1
+
+    def gcd(x: int, y: int):
+        # GCD by Euclidean method
+        small,large = (x,y) if x<y else (y,x)
+
+        while small != 0:
+            temp = large % small
+            large = small
+            small = temp
+
+        return large
+
+
+    #main
+    if __name__ == "__main__":
+        msg = data1
+
+        cypher_text, plain_text = rsa_algo(11,13, msg)
+
+        print("Encrypted (Cypher text) : ", cypher_text)
+        sent_packet=cypher_text+str(hashlib.sha256((msg).encode('utf-8')).hexdigest())
+        print("Sent Data Packet:",sent_packet)
+        print(len(sent_packet))
+    c.send(sent_packet.encode())
+    c.close()
+
+
+
+
+
+
+
+CLIENT
+
+
+
+
+
+
+
+
+import socket
+import pandas as pd
+s=socket.socket()
+host=socket.gethostname()
+port=12347
+s.connect((host,port))
+dz = ((s.recv(1024)))
+
+cypher_text=((str(dz))[2:len(str(dz))-64])
+print("Convert to",cypher_text)
+print(cypher_text.index("\\"))
+#print("Now",cypher_text)
+def rsa_algo(p: int,q: int, cypher_text: str):
+    # n = pq
+    n = p * q
+    # z = (p-1)(q-1)
+    z = (p-1)*(q-1)
+
+    # e -> gcd(e,z)==1      ; 1 < e < z
+    # d -> ed = 1(mod z)        ; 1 < d < z
+    e = find_e(z)
+    d = find_d(e, z)
+
+   
+
+    # Convert Plain Text -> Cypher Text
+    plain_text = ''
+    # P = (C ^ d) % n
+    for ch in cypher_text:
+        # convert it to ascii
+        ch = ord(ch)
+        # decrypt the char and add to plain text
+        # convert the calculated value to Characters(chr)
+        plain_text += chr((ch ** d) % n)
+
+    return plain_text
+
+def find_e(z: int):
+    # e -> gcd(e,z)==1      ; 1 < e < z
+    e = 2
+    while e < z:
+        # check if this is the required `e` value
+        if gcd(e, z)==1:
+            return e
+        # else : increment and continue
+        e += 1
+
+def find_d(e: int, z: int):
+    # d -> ed = 1(mod z)        ; 1 < d < z
+    d = 2
+    while d < z:
+        # check if this is the required `d` value
+        if ((d*e) % z)==1:
+            return d
+        # else : increment and continue
+        d += 1
+
+def gcd(x: int, y: int):
+    # GCD by Euclidean method
+    small,large = (x,y) if x<y else (y,x)
+
+    while small != 0:
+        temp = large % small
+        large = small
+        small = temp
+
+    return large
+
+
+#main
+if __name__ == "__main__":
+    
+
+    plain_text = rsa_algo(11, 17, cypher_text)
+
+    print("Decrypted (Plain text) : ", plain_text)
+    print(len(cypher_text))
+
+
+
+
