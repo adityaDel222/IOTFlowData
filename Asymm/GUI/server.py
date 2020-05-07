@@ -30,7 +30,7 @@ def verifyClient(client_msg):
 	key = RSA.generate(1024, random_generator)
 	public_key = key.publickey()
 
-	plaintext = row_info + "sha256"
+	plaintext = row_info + "sha512"
 
 	ciphertext = []
 	for p in plaintext:
@@ -39,11 +39,11 @@ def verifyClient(client_msg):
 	ciphertext = ''.join(ciphertext)
 	ciphertext_length = len(ciphertext)
 
-	server_hash = hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
+	server_hash = hashlib.sha512((plaintext).encode('utf-8')).hexdigest()
 
-	client_hash = client_msg[-72:-8]
+	client_hash = client_msg[-136:-8]
 
-	server_msg = str(ciphertext) + str(server_hash) + "sha256" + str(row) + str(len(str(row)))
+	server_msg = str(ciphertext) + str(server_hash) + "sha512" + str(row) + str(len(str(row)))
 	server_msg_length = len(server_msg)
 
 	top = Tk()
@@ -62,9 +62,9 @@ def verifyClient(client_msg):
 	Label(top, text = 'Ciphertext:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 95, width = w1, height = 20)
 	Label(top, text = ciphertext[:78] + ciphertext[-50:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 125, width = w1, height = 30)
 	Label(top, text = 'Generated Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 165, width = w1, height = 20)
-	Label(top, text = server_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 195, width = w1, height = 15)
-	Label(top, text = 'Received Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 220, width = w1, height = 20)
-	Label(top, text = client_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 250, width = w1, height = 15)
+	Label(top, text = server_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 195, width = w1, height = 40)
+	Label(top, text = 'Received Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 245, width = w1, height = 20)
+	Label(top, text = client_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 265, width = w1, height = 50)
 
 	if(server_hash == client_hash):
 		conn.send(b'Authenticated')
@@ -115,7 +115,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 			Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 260, width = 10, height = 20)
 			Label(root, text = file_path.FILE_PATH, font = ("Courier", 10), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 260, width = 205, height = 20)
 
-			client_msg = conn.recv(12750)
+			client_msg = conn.recv(13000)
 			client_msg = client_msg.decode()
 
 			Label(root, text = "Select row number", font = ("Arial", 12), bg = BG).place(x = w1 / 2 - 160, y = 320, width = 145, height = 20)

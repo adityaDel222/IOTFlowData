@@ -20,10 +20,10 @@ def sysExit():
 def verifyClient():
 	row = int(row_num.get())
 	row_info = str(file.saddr[row]) + str(file.sport[row]) + str(file.daddr[row]) + str(file.dport[row]) + str(random.randint(100,999))
-	msg = str(hashlib.sha256((row_info).encode('utf-8')).hexdigest()) + "sha256" + str(row) + str(len(str(row)))
+	msg = str(hashlib.sha512((row_info).encode('utf-8')).hexdigest()) + "sha512" + str(row) + str(len(str(row)))
 	
 	top = Toplevel()
-	top.title('IOT Flow Data with Hash - Client')
+	top.title('IOT Flow Data with Hash - (Fraud) Client')
 	top.attributes('-topmost', 1)
 	top.attributes('-topmost', 0)
 	w, h = top.winfo_screenwidth(), top.winfo_screenheight()
@@ -34,7 +34,7 @@ def verifyClient():
 	top.configure(bg = BG)
 
 	Label(top, text = 'Generated Hash:', font = ("Arial Bold", 12), bg = BG).place(x = 0, y = 20, width = w1, height = 20)
-	Label(top, text = msg, font = ("Courier", 8), bg = BG).place(x = 0, y = 50, width = w1, height = 15)
+	Label(top, text = msg, font = ("Courier", 8), bg = BG, wraplength = 480).place(x = 0, y = 50, width = w1, height = 30)
 	s.send(msg.encode())
 	reply = s.recv(1024)
 	replytxt = str(reply)[2:-1]
@@ -52,7 +52,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	host = socket.gethostname()
 
 	root = Tk()
-	root.title('IOT Flow Data with Hash - Client')
+	root.title('IOT Flow Data with Hash - (Fraud) Client')
 	root.attributes('-topmost', 1)
 	root.attributes('-topmost', 0)
 	w, h = root.winfo_screenwidth(), root.winfo_screenheight()

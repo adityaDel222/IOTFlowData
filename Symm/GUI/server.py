@@ -29,9 +29,9 @@ def verifyClient(client_msg):
 	pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
 	unpad = lambda s: s[:-ord(s[len(s) - 1:])]
 
-	password = str(1111) #Random password
+	password = str(1111)	# Random password
 
-	plaintext = row_info + "sha256"
+	plaintext = row_info + "sha256"	# SHA256 because AES takes only 32 bytes as key; SHA512 have been used for final ciphertext hash
 
 	private_key = hashlib.sha256(password.encode("utf-8")).digest()
 	raw = pad(plaintext)
@@ -39,8 +39,8 @@ def verifyClient(client_msg):
 	cipher = AES.new(private_key, AES.MODE_CBC, iv)
 	ciphertext = base64.b64encode(iv + cipher.encrypt(raw))
 
-	ciphertext_hash = hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
-	server_msg = str(ciphertext)[2:len(ciphertext)+2] + str(ciphertext_hash) + "sha256" + str(row) + str(len(str(row)))
+	ciphertext_hash = hashlib.sha512((plaintext).encode('utf-8')).hexdigest()
+	server_msg = str(ciphertext)[2:len(ciphertext)+2] + str(ciphertext_hash) + "sha512" + str(row) + str(len(str(row)))
 
 	top = Tk()
 	top.title('IOT Flow Data with Hash - Server') 
@@ -58,10 +58,10 @@ def verifyClient(client_msg):
 	Label(top, text = 'Ciphertext:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 65, width = w1, height = 20)
 	Label(top, text = ciphertext, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 95, width = w1, height = 30)
 	Label(top, text = 'Ciphertext Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 135, width = w1, height = 20)
-	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 165, width = w1, height = 15)
-	Label(top, text = 'Generated message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 190, width = w1, height = 20)
-	Label(top, text = server_msg, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 220, width = w1, height = 50)
-	Label(top, text = 'Received message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 280, width = w1, height = 20)
+	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 165, width = w1, height = 30)
+	Label(top, text = 'Generated message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 205, width = w1, height = 20)
+	Label(top, text = server_msg, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 230, width = w1, height = 50)
+	Label(top, text = 'Received message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 285, width = w1, height = 20)
 	Label(top, text = client_msg, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 310, width = w1, height = 50)
 
 	if(server_msg == client_msg):

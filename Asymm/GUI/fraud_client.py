@@ -2,11 +2,11 @@ import pandas as pd
 import hashlib
 import socket
 import Crypto
+import random
 from Crypto.PublicKey import RSA
 from Crypto import Random
 import ast
 from tkinter import *
-import random
 import sys
 sys.path.append('../../Resources')
 import file_path
@@ -30,7 +30,7 @@ def verifyClient():
 	key = RSA.generate(1024, random_generator)
 	public_key = key.publickey()
 
-	plaintext = row_info + "sha256" + str(random.randint(100,999))
+	plaintext = row_info + "sha512" + str(random.randint(100,999))
 
 	ciphertext = []
 	for p in plaintext:
@@ -39,13 +39,13 @@ def verifyClient():
 	ciphertext = ''.join(ciphertext)
 	ciphertext_length = len(ciphertext)
 
-	ciphertext_hash = hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
+	ciphertext_hash = hashlib.sha512((plaintext).encode('utf-8')).hexdigest()
 
-	msg = str(ciphertext) + str(ciphertext_hash) + "sha256" + str(row) + str(len(str(row)))
+	msg = str(ciphertext) + str(ciphertext_hash) + "sha512" + str(row) + str(len(str(row)))
 	msg_length = len(msg)
 
 	top = Toplevel()
-	top.title('IOT Flow Data with Hash - Client')
+	top.title('IOT Flow Data with Hash - (Fraud) Client')
 	top.attributes('-topmost', 1)
 	top.attributes('-topmost', 0)
 	w, h = top.winfo_screenwidth(), root.winfo_screenheight()
@@ -60,9 +60,9 @@ def verifyClient():
 	Label(top, text = 'Ciphertext:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 95, width = w1, height = 20)
 	Label(top, text = ciphertext[:78] + ciphertext[-50:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 125, width = w1, height = 30)
 	Label(top, text = 'Generated Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 165, width = w1, height = 20)
-	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 195, width = w1, height = 15)
-	Label(top, text = 'Generated Message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 220, width = w1, height = 20)
-	Label(top, text = msg[:100] + '...' + msg[-100:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 250, width = w1, height = 50)
+	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 195, width = w1, height = 40)
+	Label(top, text = 'Generated Message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 245, width = w1, height = 20)
+	Label(top, text = msg[:100] + '...' + msg[-100:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 275, width = w1, height = 50)
 
 	s.send(msg.encode())
 	reply = s.recv(1024)
@@ -83,7 +83,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	host = socket.gethostname()
 
 	root = Tk()
-	root.title('IOT Flow Data with Hash - Client')
+	root.title('IOT Flow Data with Hash - (Fraud) Client')
 	root.attributes('-topmost', 1)
 	root.attributes('-topmost', 0)
 	w, h = root.winfo_screenwidth(), root.winfo_screenheight()

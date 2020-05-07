@@ -19,7 +19,7 @@ def sysExit():
 def verifyClient():
 	row = int(row_num.get())
 	row_info = str(file.saddr[row]) + str(file.sport[row]) + str(file.daddr[row]) + str(file.dport[row])
-	msg = str(hashlib.sha256((row_info).encode('utf-8')).hexdigest()) + "sha256" + str(row) + str(len(str(row)))
+	msg = str(hashlib.sha512((row_info).encode('utf-8')).hexdigest()) + "sha512" + str(row) + str(len(str(row)))
 	
 	top = Toplevel()
 	top.title('IOT Flow Data with Hash - Client')
@@ -33,7 +33,7 @@ def verifyClient():
 	top.configure(bg = BG)
 
 	Label(top, text = 'Generated Hash:', font = ("Arial Bold", 12), bg = BG).place(x = 0, y = 20, width = w1, height = 20)
-	Label(top, text = msg, font = ("Courier", 8), bg = BG).place(x = 0, y = 50, width = w1, height = 15)
+	Label(top, text = msg, font = ("Courier", 8), bg = BG, wraplength = 480).place(x = 0, y = 50, width = w1, height = 30)
 	s.send(msg.encode())
 	reply = s.recv(1024)
 	replytxt = str(reply)[2:-1]

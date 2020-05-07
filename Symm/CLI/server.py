@@ -4,12 +4,14 @@ import socket
 import base64
 from Crypto.Cipher import AES
 from Crypto import Random
+import sys
+sys.path.append('../../Resources')
+import file_path
 
 HOST = '127.0.0.1'
 PORT = 12345
 
-FILE_PATH = 'C:/Python3/IOTFlowData/Resources/t.csv'
-file = pd.read_csv(FILE_PATH)
+file = pd.read_csv(file_path.FILE_PATH)
 
 def encrypt(raw, password):
 	private_key = hashlib.sha256(password.encode("utf-8")).digest()

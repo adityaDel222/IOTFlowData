@@ -31,7 +31,7 @@ def verifyClient():
 
 	password = str(1111) #Random password
 
-	plaintext = row_info + "sha256" + str(random.randint(100,999))
+	plaintext = row_info + "sha256" + str(random.randint(100,999))	# SHA256 because AES takes only 32 bytes as key; SHA512 have been used for final ciphertext hash
 
 	private_key = hashlib.sha256(password.encode("utf-8")).digest()
 	raw = pad(plaintext)
@@ -39,8 +39,8 @@ def verifyClient():
 	cipher = AES.new(private_key, AES.MODE_CBC, iv)
 	ciphertext = base64.b64encode(iv + cipher.encrypt(raw))
 
-	ciphertext_hash = hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
-	msg = str(ciphertext)[2:len(ciphertext)+2] + str(ciphertext_hash) + "sha256" + str(row) + str(len(str(row)))
+	ciphertext_hash = hashlib.sha512((plaintext).encode('utf-8')).hexdigest()
+	msg = str(ciphertext)[2:len(ciphertext)+2] + str(ciphertext_hash) + "sha512" + str(row) + str(len(str(row)))
 
 	top = Toplevel()
 	top.title('IOT Flow Data with Hash - (Fraud) Client')
@@ -58,9 +58,9 @@ def verifyClient():
 	Label(top, text = 'Ciphertext:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 95, width = w1, height = 20)
 	Label(top, text = ciphertext, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 125, width = w1, height = 30)
 	Label(top, text = 'Ciphertext Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 165, width = w1, height = 20)
-	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 195, width = w1, height = 15)
-	Label(top, text = 'Generated message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 220, width = w1, height = 20)
-	Label(top, text = msg, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 250, width = w1, height = 50)
+	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 195, width = w1, height = 30)
+	Label(top, text = 'Generated message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 230, width = w1, height = 20)
+	Label(top, text = msg, wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 260, width = w1, height = 50)
 
 	s.send(msg.encode())
 	reply = s.recv(1024)

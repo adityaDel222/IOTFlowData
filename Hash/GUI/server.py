@@ -18,7 +18,7 @@ hash_list = []
 
 for row in range(0, 100):
 	row_info = str(file.saddr[row]) + str(file.sport[row]) + str(file.daddr[row]) + str(file.dport[row])
-	row_info_hash = str(hashlib.sha256((row_info).encode('utf-8')).hexdigest())
+	row_info_hash = str(hashlib.sha512((row_info).encode('utf-8')).hexdigest())
 	hash_list.append(row_info_hash)
 
 print('Waiting for client...')
@@ -28,7 +28,7 @@ def sysExit():
 
 def verifyClient(msg):
 	row = int(row_num.get())
-	row_info_hash = hash_list[row] + "sha256" + str(row) + str(len(str(row)))
+	row_info_hash = hash_list[row] + "sha512" + str(row) + str(len(str(row)))
 
 	top = Toplevel()
 	top.title('IOT Flow Data with Hash - Server')
@@ -42,9 +42,9 @@ def verifyClient(msg):
 	top.configure(bg = BG)
 
 	Label(top, text = 'Generated Hash:', font = ("Arial Bold", 10), bg = BG).place(x = 0, y = 10, width = w1, height = 15)
-	Label(top, text = row_info_hash, font = ("Courier", 8), bg = BG).place(x = 0, y = 30, width = w1, height = 15)
-	Label(top, text = 'Received Hash:', font = ("Arial Bold", 10), bg = BG).place(x = 0, y = 50, width = w1, height = 15)
-	Label(top, text = msg, font = ("Courier", 8), bg = BG).place(x = 0, y = 70, width = w1, height = 15)
+	Label(top, text = row_info_hash, font = ("Courier", 8), bg = BG, wraplength = 480).place(x = 0, y = 30, width = w1, height = 30)
+	Label(top, text = 'Received Hash:', font = ("Arial Bold", 10), bg = BG).place(x = 0, y = 70, width = w1, height = 15)
+	Label(top, text = msg, font = ("Courier", 8), bg = BG, wraplength = 480).place(x = 0, y = 90, width = w1, height = 30)
 
 	if(msg == row_info_hash):
 		conn.send(b'Authenticated')
@@ -55,8 +55,8 @@ def verifyClient(msg):
 		lblfg = "red"
 		lbltxt = "Not Authenticated"
 
-	Label(top, text = lbltxt, font = ("Arial", 14), bg = BG, fg = lblfg).place(x = 0, y = 100, width = w1, height = 30)
-	Button(top, text = 'Close', command = top.destroy, bg = BG, fg = "red", font = ("Segoe UI Light", 12)).place(x = w1 / 2 - 50, y = 150, width = 100, height = 30)
+	Label(top, text = lbltxt, font = ("Arial", 14), bg = BG, fg = lblfg).place(x = 0, y = 125, width = w1, height = 30)
+	Button(top, text = 'Close', command = top.destroy, bg = BG, fg = "red", font = ("Segoe UI Light", 12)).place(x = w1 / 2 - 50, y = 160, width = 100, height = 30)
 
 	top.mainloop()
 

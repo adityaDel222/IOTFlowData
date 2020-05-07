@@ -29,7 +29,7 @@ def verifyClient():
 	key = RSA.generate(1024, random_generator)
 	public_key = key.publickey()
 
-	plaintext = row_info + "sha256"
+	plaintext = row_info + "sha512"
 
 	ciphertext = []
 	for p in plaintext:
@@ -38,9 +38,9 @@ def verifyClient():
 	ciphertext = ''.join(ciphertext)
 	ciphertext_length = len(ciphertext)
 
-	ciphertext_hash = hashlib.sha256((plaintext).encode('utf-8')).hexdigest()
+	ciphertext_hash = hashlib.sha512((plaintext).encode('utf-8')).hexdigest()
 
-	msg = str(ciphertext) + str(ciphertext_hash) + "sha256" + str(row) + str(len(str(row)))
+	msg = str(ciphertext) + str(ciphertext_hash) + "sha512" + str(row) + str(len(str(row)))
 	msg_length = len(msg)
 
 	top = Toplevel()
@@ -59,9 +59,9 @@ def verifyClient():
 	Label(top, text = 'Ciphertext:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 95, width = w1, height = 20)
 	Label(top, text = ciphertext[:78] + ciphertext[-50:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 125, width = w1, height = 30)
 	Label(top, text = 'Generated Hash:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 165, width = w1, height = 20)
-	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG).place(x = 0, y = 195, width = w1, height = 15)
-	Label(top, text = 'Generated Message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 220, width = w1, height = 20)
-	Label(top, text = msg[:100] + '...' + msg[-100:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 250, width = w1, height = 50)
+	Label(top, text = ciphertext_hash, font = ('Courier', 8), bg = BG, wraplength = 450).place(x = 0, y = 195, width = w1, height = 40)
+	Label(top, text = 'Generated Message:', font = ('Arial Bold', 10), bg = BG_top).place(x = 0, y = 245, width = w1, height = 20)
+	Label(top, text = msg[:100] + '...' + msg[-100:], wraplength = 450, font = ('Courier', 8), bg = BG).place(x = 0, y = 275, width = w1, height = 50)
 
 	s.send(msg.encode())
 	reply = s.recv(1024)
