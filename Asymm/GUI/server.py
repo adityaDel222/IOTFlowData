@@ -88,6 +88,16 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	while True:
 		conn, addr = s.accept()
 		with conn:
+			hn = str(addr[0])
+			hostname = []
+			c = 0
+			while hn[c] != '.':
+				hostname.append(hn[c])
+				c += 1
+			hostname += ['.xxx.xxx.']
+			hostname += hn[-1:]
+			hostname = ''.join(hostname)
+
 			root = Tk()
 			root.title('IOT Flow Data with Hash - Server') 
 			root.attributes('-topmost', 1)
@@ -106,7 +116,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 			Label(root, text = "Connected to client", font = ("Arial Bold", 12), bg = BG).place(x = 0, y = 150, width = w1, height = 20)
 			Label(root, text = "Client IP Address", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 145, y = 205, width = 125, height = 20)
 			Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 205, width = 10, height = 20)
-			Label(root, text = str(addr[0]), font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 25, y = 205, width = 100, height = 20)
+			Label(root, text = hostname, font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 25, y = 205, width = 130, height = 20)
 			Label(root, text = "Port Number", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 120, y = 230, width = 100, height = 20)
 			Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 230, width = 10, height = 20)
 			Label(root, text = str(addr[1]), font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 25, y = 230, width = 60, height = 20)
