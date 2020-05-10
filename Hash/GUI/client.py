@@ -49,6 +49,15 @@ def verifyClient():
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.connect((HOST, PORT))
 	host = socket.gethostname()
+	hn = str(socket.gethostbyname(host))
+	hostname = []
+	c = 0
+	while hn[c] != '.':
+		hostname.append(hn[c])
+		c += 1
+	hostname += ['.xxx.xxx.']
+	hostname += hn[-3:]
+	hostname = ''.join(hostname)
 
 	root = Tk()
 	root.title('IOT Flow Data with Hash - Client')
@@ -71,14 +80,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	Label(root, text = host, font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 180, width = 70, height = 20)
 	Label(root, text = "Host IP Address", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 145, y = 205, width = 125, height = 20)
 	Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 205, width = 10, height = 20)
-	Label(root, text = str(socket.gethostbyname(host)), font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 205, width = 160, height = 20)
+	Label(root, text = hostname, font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 205, width = 160, height = 20)
 	Label(root, text = "Port Number", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 120, y = 230, width = 100, height = 20)
 	Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 230, width = 10, height = 20)
 	Label(root, text = PORT, font = ("Courier", 12), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 230, width = 60, height = 20)
 
 	Label(root, text = "File Read", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 100, y = 260, width = 80, height = 20)
 	Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 260, width = 10, height = 20)
-	Label(root, text = file_path.FILE_PATH, font = ("Courier", 10), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 260, width = 205, height = 20)
+	Label(root, text = file_path.FILE_PATH[-28:], font = ("Courier", 10), justify = "left", bg = BG).place(x = w1 / 2 + 20, y = 260, width = 250, height = 20)
 
 	Label(root, text = 'Connected to server', font = ("Arial Bold", 12), bg = BG).place(x = w1 / 2 - 75, y = 300, width = 160, height = 20)
 	Label(root, text = "Select row number", font = ("Arial", 12), bg = BG).place(x = w1 / 2 - 160, y = 340, width = 145, height = 20)

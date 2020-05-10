@@ -111,7 +111,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 			Label(root, text = "File Read", font = ("Arial", 12), justify = "right", bg = BG).place(x = w1 / 2 - 100, y = 260, width = 80, height = 20)
 			Label(root, text = ":", font = ("Arial", 12), justify = "center", bg = BG).place(x = w1 / 2, y = 260, width = 10, height = 20)
-			Label(root, text = file_path.FILE_PATH, font = ("Courier", 10), justify = "left", bg = BG).place(x = w1 / 2 + 30, y = 260, width = 205, height = 20)
+			Label(root, text = file_path.FILE_PATH[-28:], font = ("Courier", 10), justify = "left", bg = BG).place(x = w1 / 2 + 20, y = 260, width = 250, height = 20)
 
 			client_msg = conn.recv(1024)
 			client_msg = client_msg.decode()
