@@ -1,5 +1,5 @@
 # IOTNetworkFlowAnalysis
-IOT Flow Data - A Python-based authentication of client on server
+IOT Network Flow Analysis - A Python-based authentication of client on server
 
 ## Instructions
 
