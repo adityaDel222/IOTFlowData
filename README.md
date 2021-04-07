@@ -1,4 +1,4 @@
-# IOTNetworkFlowAnalysis
+# IOT Network Flow Analysis
 IOT Network Flow Analysis - A Python-based authentication of client on server
 
 ## Instructions
