@@ -9,4 +9,4 @@ IOT Flow Data - A Python-based authentication of client on server
 
 Please reference this GitHub for any usage in your research:
 
-<pre><code> Aswani Kumar Cherukuri, I. Sumaiya Thaseen, Gang Li, Xiao Liu, Vinamra Das and Aditya. IOTFlowData.  San Fransico (CA): GitHub; [accessed 2021]. https://github.com/adityaDel222/IOTFlowData </code></pre>
+<pre><code> Aswani Kumar Cherukuri, I. Sumaiya Thaseen, Gang Li, Xiao Liu, Vinamra Das and Aditya. IOTFlowData.  San Francisco (CA): GitHub; [accessed 2021]. https://github.com/adityaDel222/IOTFlowData </code></pre>
